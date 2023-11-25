@@ -17,8 +17,10 @@ screen = pygame.display.set_mode((300, 400))
 road = pygame.image.load("images/road.jpg").convert_alpha()
 car1 = pygame.image.load("images/car1.png").convert_alpha()
 car2 = pygame.image.load("images/car2.png").convert_alpha()
-startBtn = pygame.image.load("images/start_btn.png").convert_alpha()
-exitBtn = pygame.image.load("images/exit_btn.png").convert_alpha()
+startBtn1 = pygame.image.load("images/start_btn.png").convert_alpha()
+exitBtn1 = pygame.image.load("images/exit_btn.png").convert_alpha()
+startBtn2 = pygame.image.load("images/start_btn_touched.png").convert_alpha()
+exitBtn2 = pygame.image.load("images/exit_btn_touched.png").convert_alpha()
 
 class Background():
     def __init__(self):
@@ -74,30 +76,56 @@ cs = CarSpawn()
 bg = Background()
 
 def start():
-    car_x = 130
-    car_y = 280
+    global touchedbtn1, touchedbtn2
+    touchedbtn1 = False
+    touchedbtn2 = False
     while True:
+        touchedbtn1 = False
+        touchedbtn2 = False
         bg.draw()
         bg.update()
+        btn1 = screen.blit(startBtn1, (78, 131))
+        btn2 = screen.blit(exitBtn1, (89, 223))
 
-        btn1 = screen.blit(startBtn, (78, 131))
-        btn2 = screen.blit(exitBtn, (89, 223))
+        mouse = pygame.mouse.get_pos()
+        if 78 <= mouse[0] <= 219 and 131 <= mouse[1] <= 195:
+            touchedbtn1 = True
+        if 89 <= mouse[0] <= 210 and 223 <= mouse[1] <= 286:
+            touchedbtn2 = True
+
+        if touchedbtn1:
+            btn1 = screen.blit(startBtn2, (78, 131))
+            for event in pygame.event.get():
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    game()
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+            pygame.display.update()
+        else:
+            touchedbtn1 = False
+
+        if touchedbtn2:
+            btn2 = screen.blit(exitBtn2, (89, 223))
+            for event in pygame.event.get():
+                if event.type == pygame.MOUSEBUTTONDOWN:      
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+            pygame.display.update()
+        else:
+            touchedbtn2 = False
 
         for event in pygame.event.get():
-            mouse = pygame.mouse.get_pos()
-
-            if 78 <= mouse[0] <= 219 and 131 <= mouse[1] <= 195 and event.type == pygame.MOUSEBUTTONDOWN:
-                game()
-            if 89 <= mouse[0] <= 210 and 223 <= mouse[1] <= 286 and event.type == pygame.MOUSEBUTTONDOWN:
-                pygame.quit()
-                sys.exit()
-
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
 
-        clock.tick(60)
         pygame.display.update()
+        clock.tick(60)
+        
 
 
 def game():
